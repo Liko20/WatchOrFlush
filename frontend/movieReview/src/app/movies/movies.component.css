@@ -1,0 +1,21 @@
+.fill{
+    object-fit: scale-down;
+}
+ img{
+    height: 400px ;
+    width: 300px ;
+}
+.MoviePoster{
+    height: 450px;
+    width: 350px;
+    background-color: black;
+}
+.movie{
+
+    height: 450px;
+    width: 320px;
+    margin: 26px;
+    display: inline-flex;
+    
+}
+

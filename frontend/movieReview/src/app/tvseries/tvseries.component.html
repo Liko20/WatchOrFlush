@@ -1,0 +1,5 @@
+<div class="movie" *ngFor="let listitem of list" >
+    <div id="MoviePoster"  >
+        <img [src]='"https://image.tmdb.org/t/p/w500" + listitem.poster_path' alt="" class="fill" routerLink="/reviews/{{listitem.id}}/{{listitem.media_type}}">  
+    </div>
+</div>
