@@ -26,7 +26,7 @@ export class ReviewsComponent {
     constructor(private activatedRoute : ActivatedRoute,private getmovies:GetmoviesService,private sendreview: SendreviewService){
       this.media = this.activatedRoute.snapshot.params['media_type'] ;
       this.id = this.activatedRoute.snapshot.params['id'] ;
-      console.log(this.media)
+      
       if(this.media=="movie"){
           this.getmovies.getMovieById(this.id).subscribe(data=>{
             this.movielist=data;

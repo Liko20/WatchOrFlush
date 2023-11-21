@@ -8,6 +8,31 @@ router.get('/', (req, res) => {
     res.json("hello")
 })
 
+router.get("/user",async(req,res)=>{
+    try{
+        const cook = req.cookies["jwt"]
+
+        const claims = jwt.verify(cook,"secret")
+
+        if(!claims){
+            return res.sendStatus(401).send({
+                message:"unauthenticated"
+            })
+        
+        };
+        const userf  = await LoginCred.findOne({ _id : claims._id });
+        const {password ,...data} = await userf.toJSON();
+        res.send(data)
+
+    }catch(err){
+        console.log(err)
+        return res.sendStatus(401).send({
+            message:"unauthenticated"
+        });
+    }
+   
+})
+
 
 router.get("/getreviews/:movieId", async (req, res) => {
     try {
@@ -20,8 +45,8 @@ router.get("/getreviews/:movieId", async (req, res) => {
 
 router.post("/review", async (req, res) => {
     console.log(req.body)
-    id = req.body.id;
-    review = req.body.review;
+    let id = req.body.id;
+    let review = req.body.review;
 
     const usereview = new UserReview({ id, review });
     try {
@@ -45,9 +70,9 @@ router.post("/register", async (req, res) => {
         return
     }
     else {
-        password = req.body.password
-        salt = await bcrypt.genSalt(10)
-        hashedPassword = await bcrypt.hash(password, salt)
+        let password = req.body.password
+        let salt = await bcrypt.genSalt(10)
+        let hashedPassword = await bcrypt.hash(password, salt)
 
         const newUser = new LoginCred({
             email: email,
@@ -55,7 +80,7 @@ router.post("/register", async (req, res) => {
         })
         try{
         let user = await newUser.save();
-        let {_id} = await user.toJSON()
+        const {_id} = await user.toJSON()
         const token = jwt.sign( {_id:_id},"secret")
         res.cookie("jwt",token,{
             httpOnly:true,

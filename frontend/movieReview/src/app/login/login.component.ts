@@ -15,7 +15,6 @@ export class LoginComponent {
   Login(){
     
     this.register.LoginUser(this.User).subscribe( data=>{
-     
       alert(data)
     })
   }
