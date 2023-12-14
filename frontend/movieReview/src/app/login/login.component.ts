@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../service/auth.service';
+import { LogoutService } from '../service/logout.service';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { Emitters } from '../emitters/emitters';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -10,12 +15,19 @@ export class LoginComponent {
     email:"",
     password:""
   };
-  constructor( private register:AuthService){}
+  constructor( private auth:AuthService , private router:Router){}
 
   Login(){
-    
-    this.register.LoginUser(this.User).subscribe( data=>{
-      alert(data)
+    this.auth.LoginUser(this.User).subscribe( data=>{
+      this.router.navigate([""]);
+      Emitters.authEmitter.emit(true)
+    },(err)=>{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please Enter valid Password or Email',
+      })
+      Emitters.authEmitter.emit(false)
     })
   }
 }

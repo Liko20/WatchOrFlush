@@ -8,29 +8,37 @@ router.get('/', (req, res) => {
     res.json("hello")
 })
 
-router.get("/user",async(req,res)=>{
-    try{
+router.get("/user", async (req, res) => {
+    console.log("user hit")
+    try {
         const cook = req.cookies["jwt"]
-
-        const claims = jwt.verify(cook,"secret")
-
-        if(!claims){
-            return res.sendStatus(401).send({
-                message:"unauthenticated"
-            })
         
-        };
-        const userf  = await LoginCred.findOne({ _id : claims._id });
-        const {password ,...data} = await userf.toJSON();
-        res.send(data)
+        if(cook==null){
+            
+            return res.sendStatus(401).send({
+                message: "unauthenticated"
+            })
+        }
+        else{
+            const claims = jwt.verify(cook, "secret")
+        if (!claims) {
+            return res.sendStatus(401).send({
+                message: "unauthenticated"
+            })
 
-    }catch(err){
+        };
+        const userf = await LoginCred.findOne({ _id: claims._id });
+        const { password, ...data } = await userf.toJSON();
+        return res.send(data)
+        }
+
+    } catch (err) {
         console.log(err)
         return res.sendStatus(401).send({
-            message:"unauthenticated"
+            message: "unauthenticated"
         });
     }
-   
+
 })
 
 
@@ -60,14 +68,14 @@ router.post("/review", async (req, res) => {
 router.post("/register", async (req, res) => {
     console.log(req.body)
     let email = req.body.email
-    
+
     let getEmail = await LoginCred.findOne({ email: email });
-   
+
     if (getEmail) {
-        res.status(400).send({
-            message : "User already Exists"
+        return res.status(400).send({
+            message: "User already Exists"
         })
-        return
+
     }
     else {
         let password = req.body.password
@@ -78,49 +86,70 @@ router.post("/register", async (req, res) => {
             email: email,
             password: hashedPassword
         })
-        try{
-        let user = await newUser.save();
-        const {_id} = await user.toJSON()
-        const token = jwt.sign( {_id:_id},"secret")
-        res.cookie("jwt",token,{
-            httpOnly:true,
-            maxAge:24*60*60*1000
-        }).status(200).json({
-            status : 200 ,
-            message:"success",
+        try {
+            let user = await newUser.save();
+            const { _id } = await user.toJSON()
+            const token = jwt.sign({ _id: _id }, "secret")
+            return res.cookie("jwt", token, {
+                httpOnly: true,
+                maxAge: 24 * 60 * 60 * 1000
+            }).status(200).json({
+                status: 200,
+                message: "success",
 
-        })
-        
+            })
+
         }
-        catch(err)
-        {
-            res.status(400).send(err)
+        catch (err) {
+            return res.status(400).send(err)
         }
     }
 })
+router.post("/logout", async (req, res) => {
+    console.log("logout")
+    res.cookie("jwt", "", { maxAge: 0 })
+
+    return res.cookie("jwt", "", {
+        httpOnly: true,
+        maxAge: 0
+    }).status(200).json({
+        status: 200,
+        message: "success",
+
+    })
+})
 
 router.post("/login", async (req, res) => {
-    console.log("login hit")
+    console.log("login")
     let userData = req.body;
-    console.log("body", userData)
 
     try {
         const user = await LoginCred.findOne({ email: userData.email });
         console.log("database", user)
         if (!user) {
-            res.status(401).send("invalid email")
+            return res.status(401).send("invalid email")
         }
         else {
-            if (userData.password === user.password) {
-                res.status(200).send(user)
-            }
-            else {
-                res.status(401).send("invalid password")
+            if (!(await bcrypt.compare(userData.password, user.password))) {
+                return res.send.status(404).send({
+                    message: "user not found"
+                })
+            } else {
+                const { _id } = await user.toJSON()
+                const token = jwt.sign({ _id: _id }, "secret")
+                return res.cookie("jwt", token, {
+                    httpOnly: true,
+                    maxAge: 24 * 60 * 60 * 1000
+                }).status(200).json({
+                    status: 200,
+                    message: "success",
+
+                })
             }
         }
     }
     catch (err) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
     }
 
 

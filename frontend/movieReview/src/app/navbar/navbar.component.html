@@ -18,12 +18,21 @@
 
       </ul>
 
-      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0" *ngIf=!islogin>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/login">{{islogin}}</a>
+          <a class="nav-link" routerLink="/login">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/register">register</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0" *ngIf=islogin>
+        <li class="nav-item">
+          <a class="nav-link" >{{user}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="" (click)="logoutreq()">logout</a>
         </li>
       </ul>
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../service/auth.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { Emitters } from '../emitters/emitters';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -38,8 +39,10 @@ export class RegisterComponent implements OnInit{
     else{
       this.register.registerUser(this.User).subscribe( ()=>{
         this.router.navigate(['/']);
+        Emitters.authEmitter.emit(true)
       }, err=>{
           Swal.fire("Error",err.error.message,"error")
+          Emitters.authEmitter.emit(false)
       });
       
     }

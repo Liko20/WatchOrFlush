@@ -15,7 +15,7 @@ export class AuthService {
 
    LoginUser(user:any)
    {
-     return this.http.post<any>(this.url+ 'login',user,{withCredentials:true});
+     return this.http.post<any>('http://localhost:5000/login',user,{withCredentials:true});
    }
 
    getUser()
