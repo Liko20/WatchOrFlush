@@ -18,9 +18,14 @@ constructor(private auth : AuthService,private logout:LogoutService,private rout
     this.islogin = true
     this.user=data.email;
     Emitters.authEmitter.emit(true)
+    Emitters.CurrentUser.emit(this.user)
+    localStorage.setItem("username",this.user)
   },(err:any)=>{
     this.islogin = false
+    this.user=""
     Emitters.authEmitter.emit(false)
+    Emitters.CurrentUser.emit("")
+    localStorage.removeItem("username")
   })
   
 }
@@ -29,12 +34,18 @@ constructor(private auth : AuthService,private logout:LogoutService,private rout
     this.islogin=auth
   })
 
+  Emitters.CurrentUser.subscribe((curruser=>{
+    this.user=curruser;
+  }))
+
  }
 
  logoutreq(){
     this.logout.logout().subscribe(data=>{
       this.router.navigate(["/"])
       Emitters.authEmitter.emit(false)
+      Emitters.CurrentUser.emit("")
+      localStorage.removeItem("username")
     },(err)=>{
       console.log(err)
     });

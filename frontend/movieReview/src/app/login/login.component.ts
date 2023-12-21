@@ -19,14 +19,16 @@ export class LoginComponent {
 
   Login(){
     this.auth.LoginUser(this.User).subscribe( data=>{
-      this.router.navigate([""]);
       Emitters.authEmitter.emit(true)
+      localStorage.setItem("username",data.username)
+      this.router.navigate([""]);
     },(err)=>{
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Please Enter valid Password or Email',
       })
+      localStorage.removeItem("username")
       Emitters.authEmitter.emit(false)
     })
   }

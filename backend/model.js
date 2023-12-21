@@ -8,6 +8,9 @@ const UserSchema = new mongoose.Schema({
     review:{ 
         type:String
     },
+    username:{
+        type:String
+    }
 });
 
 const LoginSchema =  new mongoose.Schema({

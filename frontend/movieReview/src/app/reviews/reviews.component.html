@@ -1,6 +1,6 @@
 <div *ngIf="movie">
-    
-    <div class="main" >
+
+    <div class="main">
         <div class="reviewPoster">
             <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="" class="fill">
         </div>
@@ -13,34 +13,60 @@
                     <h4>{{movie.vote_average}} </h4>
                 </div>
                 <div class="rating">
-                    <h3>User rated</h3>    
+                    <h3>User rated</h3>
                     <h4>{{movie.vote_count}} </h4>
                 </div>
 
             </div>
         </div>
 
-        <div class="reviews">
-            <form [formGroup]="ReviewForm" (ngSubmit)="send()"> 
+        <div class="reviews" *ngIf=userloggedin>
+            <form [formGroup]="ReviewForm" (ngSubmit)="send()">
                 <h3>Share your Review</h3>
                 <div class="form-group">
-                  <input type="text" class="form-control"  id="review" formControlName="reviewStr" aria-describedby="review" placeholder="Enter review">
+                    <input type="text" class="form-control" id="review" formControlName="reviewStr"
+                        aria-describedby="review" placeholder="Enter review">
                 </div>
                 <br>
                 <button type="submit" class="btn btn-primary" s>Submit</button>
-              </form>
-              <br>
-              <div class="reviewsChild">
-                <h3>Reviews</h3> 
-                <div *ngFor ="let userreview of allReviews"> 
+            </form>
+            <br>
+            <div class="reviewsChild">
+                <h3>Reviews</h3>
+                <div *ngFor="let userreview of allReviews">
+                    <span> {{userreview.username}}</span>
                     <h5> {{userreview.review}}</h5>
                 </div>
-                
-                
+
+
             </div>
 
         </div>
-        
+
+        <div class="reviews" *ngIf=!userloggedin>
+            
+            <form [formGroup]="ReviewForm" (ngSubmit)="sendTologinPage()">
+                <h3>Share your Review</h3>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="review" formControlName="reviewStr"
+                        aria-describedby="review" placeholder="Enter review">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary" s>Submit</button>
+            </form>
+            <br>
+            <div class="reviewsChild">
+                <h3>Reviews</h3>
+                <div *ngFor="let userreview of allReviews">
+                    <span> {{userreview.username}}</span>
+                    <h5> {{userreview.review}}</h5>
+                </div>
+
+
+            </div>
+
+        </div>
+
     </div>
-    
+
 </div>

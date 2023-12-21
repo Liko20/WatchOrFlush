@@ -37,11 +37,15 @@ export class RegisterComponent implements OnInit{
       })
     }
     else{
-      this.register.registerUser(this.User).subscribe( ()=>{
-        this.router.navigate(['/']);
+      this.register.registerUser(this.User).subscribe( (data)=>{
+        console.log("from register")
+        console.log(data.username)
+        localStorage.setItem("username",data.username)
         Emitters.authEmitter.emit(true)
+        this.router.navigate(['/']);
       }, err=>{
           Swal.fire("Error",err.error.message,"error")
+          localStorage.removeItem("username")
           Emitters.authEmitter.emit(false)
       });
       

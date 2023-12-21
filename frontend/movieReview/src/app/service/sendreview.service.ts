@@ -8,9 +8,9 @@ export class SendreviewService {
     'Content-Type': 'application/json' });
   constructor(private  http : HttpClient) { }
 
-  sendReview(id:number , review:any)
+  sendReview(id:number , review:any,username:string)
   {
-     this.http.post("http://localhost:5000/review",JSON.stringify({id,review}),{headers:this.headers}).subscribe((data)=>{
+     this.http.post("http://localhost:5000/review",JSON.stringify({id,review,username}),{headers:this.headers}).subscribe((data)=>{
         console.log(data);
      })
   }

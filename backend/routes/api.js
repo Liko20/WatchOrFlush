@@ -15,14 +15,14 @@ router.get("/user", async (req, res) => {
         
         if(cook==null){
             
-            return res.sendStatus(401).send({
+            return res.status(401).send({
                 message: "unauthenticated"
             })
         }
         else{
             const claims = jwt.verify(cook, "secret")
         if (!claims) {
-            return res.sendStatus(401).send({
+            return res.status(401).send({
                 message: "unauthenticated"
             })
 
@@ -34,7 +34,7 @@ router.get("/user", async (req, res) => {
 
     } catch (err) {
         console.log(err)
-        return res.sendStatus(401).send({
+        return res.status(401).send({
             message: "unauthenticated"
         });
     }
@@ -55,8 +55,9 @@ router.post("/review", async (req, res) => {
     console.log(req.body)
     let id = req.body.id;
     let review = req.body.review;
+    let username=req.body.username;
 
-    const usereview = new UserReview({ id, review });
+    const usereview = new UserReview({ id, review ,username});
     try {
         await usereview.save();
         res.status(200).json("review submited");
@@ -96,6 +97,7 @@ router.post("/register", async (req, res) => {
             }).status(200).json({
                 status: 200,
                 message: "success",
+                username:email
 
             })
 
@@ -131,7 +133,7 @@ router.post("/login", async (req, res) => {
         }
         else {
             if (!(await bcrypt.compare(userData.password, user.password))) {
-                return res.send.status(404).send({
+                return res.status(404).send({
                     message: "user not found"
                 })
             } else {
@@ -143,6 +145,7 @@ router.post("/login", async (req, res) => {
                 }).status(200).json({
                     status: 200,
                     message: "success",
+                    username:userData.email
 
                 })
             }
