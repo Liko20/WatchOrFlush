@@ -55,7 +55,6 @@ export class ReviewsComponent {
     {
       this.sendreview.sendReview(this.id, this.ReviewForm.value.reviewStr,this.user );
       this.ReviewForm.reset() ;
-      this.router.navigate(['/reviews']);
 
     }
     sendTologinPage()
